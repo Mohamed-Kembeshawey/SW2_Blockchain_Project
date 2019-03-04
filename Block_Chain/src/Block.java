@@ -8,11 +8,10 @@ public class Block {
 	private String prev_hash;
 	private Transactions data;
 	
-	public Block(String timeStemp, Transactions data, String hash, String prev_hash) {
+	public Block(String timeStemp, Transactions data , String prev_hash) {
 		super();
 		this.timeStemp = timeStemp;
 		this.data = data;
-		this.hash = hash;
 		this.prev_hash = prev_hash;
 	}
 
@@ -88,3 +87,4 @@ public class Block {
 
 	
 }
+
