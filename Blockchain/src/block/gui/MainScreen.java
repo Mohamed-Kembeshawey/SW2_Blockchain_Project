@@ -5,11 +5,29 @@
  */
 package block.gui;
 
+import block.network.MessageListner;
+import block.network.MessageTransmetter;
+import block.network.writableGUI;
+import blockchain.BlockChain;
+import blockchain.code.Block;
+import blockchain.code.BlockChainCode;
+import blockchain.code.Transactions;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Mohamed_Reda
  */
-public class MainScreen extends javax.swing.JFrame {
+public class MainScreen extends javax.swing.JFrame implements writableGUI {
 
     /**
      * Creates new form MainScreen
@@ -28,59 +46,149 @@ public class MainScreen extends javax.swing.JFrame {
     private void initComponents() {
 
         cinnectButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         AddTransaction = new javax.swing.JButton();
         jTextField2 = new javax.swing.JTextField();
         jTextField1 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         BlocksTextArea = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        nomTrans = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        min = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         transTextfield = new javax.swing.JTextArea();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        amount = new javax.swing.JTextArea();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        to = new javax.swing.JTextArea();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
+        jTextField5 = new javax.swing.JTextField();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        from = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        mHost = new javax.swing.JTextArea();
+        jTextField6 = new javax.swing.JTextField();
+        port = new javax.swing.JTextField();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        mPort = new javax.swing.JTextArea();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        availTrans = new javax.swing.JTextArea();
+        jTextField7 = new javax.swing.JTextField();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        nomTrans = new javax.swing.JTextArea();
+        jTextField8 = new javax.swing.JTextField();
+        update = new javax.swing.JButton();
+        updateBlocks = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        cinnectButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         cinnectButton.setText("connect");
+        cinnectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cinnectButtonActionPerformed(evt);
+            }
+        });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-
+        AddTransaction.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         AddTransaction.setText("add Transaction");
+        AddTransaction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddTransactionActionPerformed(evt);
+            }
+        });
 
+        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField2.setText("Transactios");
 
+        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField1.setText("Blocks");
 
         BlocksTextArea.setColumns(20);
-        BlocksTextArea.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        BlocksTextArea.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         BlocksTextArea.setRows(5);
         jScrollPane2.setViewportView(BlocksTextArea);
 
-        nomTrans.setColumns(20);
-        nomTrans.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
-        nomTrans.setRows(5);
-        jScrollPane3.setViewportView(nomTrans);
-
-        jButton1.setText("min & send to all");
+        min.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        min.setText("min & send to all");
+        min.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                minActionPerformed(evt);
+            }
+        });
 
         transTextfield.setColumns(20);
-        transTextfield.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        transTextfield.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         transTextfield.setRows(5);
         jScrollPane4.setViewportView(transTextfield);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
-        jTextArea2.setRows(5);
-        jTextArea2.setTabSize(6);
-        jTextArea2.setText("Enter The number of trans.to min");
-        jScrollPane5.setViewportView(jTextArea2);
+        amount.setColumns(20);
+        amount.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        amount.setRows(5);
+        jScrollPane6.setViewportView(amount);
+
+        to.setColumns(20);
+        to.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        to.setRows(5);
+        jScrollPane7.setViewportView(to);
+
+        jTextField3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField3.setText("to");
+
+        jTextField4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField4.setText("amount");
+
+        jTextField5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField5.setText("from");
+
+        from.setColumns(20);
+        from.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        from.setRows(5);
+        jScrollPane8.setViewportView(from);
+
+        mHost.setColumns(20);
+        mHost.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        mHost.setRows(5);
+        jScrollPane1.setViewportView(mHost);
+
+        jTextField6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField6.setText("My host");
+
+        port.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        port.setText("My port");
+
+        mPort.setColumns(20);
+        mPort.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
+        mPort.setRows(5);
+        jScrollPane9.setViewportView(mPort);
+
+        availTrans.setColumns(20);
+        availTrans.setRows(5);
+        jScrollPane10.setViewportView(availTrans);
+
+        jTextField7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField7.setText("Unavailable transaction to min:");
+
+        nomTrans.setColumns(20);
+        nomTrans.setRows(5);
+        jScrollPane11.setViewportView(nomTrans);
+
+        jTextField8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField8.setText("Enter the nom to min:");
+
+        update.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        update.setText("update Transaction");
+        update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateActionPerformed(evt);
+            }
+        });
+
+        updateBlocks.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        updateBlocks.setText("update blockchain");
+        updateBlocks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBlocksActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -90,57 +198,189 @@ public class MainScreen extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane4)
-                        .addContainerGap())
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 484, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(min, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jScrollPane2)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(cinnectButton)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 652, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(AddTransaction)))
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(0, 12, Short.MAX_VALUE))))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(cinnectButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(update))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(32, 32, 32)
+                                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(5, 5, 5)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGap(13, 13, 13)
+                                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGap(9, 9, 9)
+                                        .addComponent(updateBlocks)
+                                        .addGap(37, 37, 37)
+                                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(port, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                                        .addComponent(AddTransaction)))))
+                        .addGap(10, 10, 10))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
-                    .addComponent(cinnectButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(AddTransaction, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cinnectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(updateBlocks, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(39, 39, 39)
+                                .addComponent(port, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(123, 123, 123))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(67, 67, 67)
+                                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(64, 64, 64)
+                                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(32, 32, 32)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(52, 52, 52)
+                                        .addComponent(AddTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(min, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32))))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    MessageListner listner;
+    ArrayList<Transactions> t = new ArrayList<>();
+    String myHost = "";
+    int myPort = 0;
+    private void cinnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cinnectButtonActionPerformed
+        // TODO add your handling code here:
+        listner = new MessageListner(this, Integer.parseInt(mPort.getText()));
+        //add to the array my ip and my port here.
+
+        addNewToTheFile();
+
+        listner.start();
+    }//GEN-LAST:event_cinnectButtonActionPerformed
+
+
+    private void AddTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTransactionActionPerformed
+        // TODO add your handling code here:
+
+        MessageTransmetter transmetter = new MessageTransmetter("*" + t.size() + "," + from.getText() + "," + amount.getText() + "," + to.getText());
+        transmetter.start();
+    }//GEN-LAST:event_AddTransactionActionPerformed
+
+    BlockChainCode chain = new BlockChainCode(2);
+    private void minActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minActionPerformed
+        // TODO add your handling code here:
+
+        if (canMin(Integer.parseInt(nomTrans.getText()) - 1)) {
+            Block block = chain.mining(t.get(Integer.parseInt(nomTrans.getText()) - 1), chain.getMy_Chain().get(chain.getMy_Chain().size() - 1).getHash());
+
+            //t.remove(Integer.parseInt(nomTrans.getText())-1);
+            //System.out.println("The mon is :" + nomTrans.getText() + " the ph: " + block.getPrev_hash());
+            MessageTransmetter transmetter = new MessageTransmetter("-," + block.getPrev_hash() + "," + block.getHash() + "," + block.getTimeStemp() + "," + block.getData().getFrom() + "," + block.getData().getAmount() + "," + block.getData().getTo() + "," + (t.size() - 1));
+            transmetter.start();
+        } else {
+            System.out.println("Sorry That transaction not available any more.");
+        }
+    }//GEN-LAST:event_minActionPerformed
+
+    private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
+        // TODO add your handling code here:
+        //update
+        myHost = mHost.getText();
+        myPort = Integer.parseInt(mPort.getText());
+        MessageTransmetter transmetter = new MessageTransmetter("!," + myHost + "," + myPort);
+        transmetter.start();
+    }//GEN-LAST:event_updateActionPerformed
+
+    private void updateBlocksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBlocksActionPerformed
+        // TODO add your handling code here:
+        myHost = mHost.getText();
+        myPort = Integer.parseInt(mPort.getText());
+        MessageTransmetter transmetter = new MessageTransmetter("@," + myHost + "," + myPort);
+        transmetter.start();
+    }//GEN-LAST:event_updateBlocksActionPerformed
 
     /**
      * @param args the command line arguments
@@ -180,18 +420,248 @@ public class MainScreen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddTransaction;
     private javax.swing.JTextArea BlocksTextArea;
+    private javax.swing.JTextArea amount;
+    private javax.swing.JTextArea availTrans;
     private javax.swing.JButton cinnectButton;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextArea from;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField jTextField8;
+    private javax.swing.JTextArea mHost;
+    private javax.swing.JTextArea mPort;
+    private javax.swing.JButton min;
     private javax.swing.JTextArea nomTrans;
+    private javax.swing.JTextField port;
+    private javax.swing.JTextArea to;
     private javax.swing.JTextArea transTextfield;
+    private javax.swing.JButton update;
+    private javax.swing.JButton updateBlocks;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void write(String s) {
+
+        int balance = 100;
+        Transactions tr = new Transactions();
+        //("*"+t.size()+"- " +"From: "+from.getText()+" ,amout: "+ amount.getText() + " ,to: " + to.getText());
+
+        String arr[] = s.split(",");
+        tr.setFrom(arr[1]);
+        tr.setTo(arr[3]);
+        tr.setAmount(Integer.parseInt(arr[2]));
+
+        for (int i = 0; i < t.size(); i++) {
+            //    System.out.println("test names" + "(" + tr.getFrom() + ")(" + t.get(i).getFrom() + ")");
+            if (t.get(i).getFrom().equals(tr.getFrom())) {
+                balance -= t.get(i).getAmount();
+                System.out.println("sub");
+            }
+            if (t.get(i).getTo().equals(tr.getFrom())) {
+                balance += t.get(i).getAmount();
+                System.out.println("add");
+            }
+            //  System.out.println("The list: " + i + " " + t.get(i).getFrom() + " " + t.get(i).getAmount() + " " + t.get(i).getTo());
+        }
+        if ((balance - tr.getAmount()) >= 0) {
+            balance -= tr.getAmount();
+            t.add(tr);
+            transTextfield.append(t.size() + "-from " + t.get(t.size() - 1).getFrom() + " ,amount:" + t.get(t.size() - 1).getAmount() + " ,to:" + t.get(t.size() - 1).getTo() + System.lineSeparator());
+        } else {
+            System.out.println("not vaild balance.");
+        }
+        System.out.println("The final b>> " + balance);
+    }
+
+    @Override
+    public void writeToBlockChain(String s) {
+        //get the logist path.
+        //("-,"+block.getPrev_hash()+","+block.getHash()+","+block.getTimeStemp()+","+block.getData().getFrom()+","+block.getData().getAmount()+","+block.getData().getTo());
+        String arr[] = s.split(",");
+
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(i + "(" + arr[i] + ")");
+        }
+
+        Block block = new Block(arr[3], new Transactions(arr[4], arr[6], Integer.parseInt(arr[5])), arr[1]);
+
+        block.setHash(arr[2]);
+        if (chain.addBlock(block)) {
+            BlocksTextArea.append("{from:" + arr[4] + " ,to:" + arr[6] + " ,amount:" + arr[5] + " , timestamp:" + arr[3] + System.lineSeparator() + " ,hash:" + arr[2] + " ,ph:" + arr[1] + "}" + System.lineSeparator());
+            availTrans.append((Integer.parseInt(arr[7]) + 1) + ",");
+            //BlocksTextArea.append("{from:"+block.getData().getFrom()+" ,to:"+block.getData().getTo()+" ,amount:"+block.getData().getAmount()+" , timestamp:"+block.getTimeStemp()+" ,hash:"+block.getHash()+" ,ph:"+block.getPrev_hash()+"}" + System.lineSeparator());
+        } else {
+            System.out.println("Unvalid Block.");
+        }
+    }
+
+    @Override
+    public void updateTheData(String theHostAndPort) {
+        //snd now the array in string to bad
+        // from - amount - to
+        String transactions = "#";
+        for (int i = 0; i < t.size(); i++) {
+            transactions += t.get(i).getFrom() + "," + t.get(i).getAmount() + "," + t.get(i).getTo() + ",";
+        }
+        //send the transactions.
+        String arr[] = theHostAndPort.split(",");
+        MessageTransmetter transmetter = new MessageTransmetter(transactions, arr[1], Integer.parseInt(arr[2]), 1);
+        transmetter.start();
+
+    }
+
+    @Override
+    public void data(String theData) {
+        String arr[] = TransactionSeparator(theData, "#");
+
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println("....(" + arr[i] + ")....");
+
+        }
+        if (arr.length >= 3) {
+            t.clear();
+            transTextfield.setText("");
+            for (int i = 0; i < arr.length; i += 3) {
+                t.add(new Transactions(arr[i], arr[i + 2], Integer.parseInt(arr[i + 1])));
+                transTextfield.append(t.size() + "-from " + t.get(t.size() - 1).getFrom() + " ,amount:" + t.get(t.size() - 1).getAmount() + " ,to:" + t.get(t.size() - 1).getTo() + System.lineSeparator());
+            }
+        }
+    }
+
+    @Override
+    public void UpdateTheBlockChain(String theHostAndPort) {
+
+        //
+        String blockChain = "$";
+        for (int i = 0; i < chain.getMy_Chain().size(); i++) {
+            Block b = chain.getMy_Chain().get(i);
+            blockChain += b.getData().getFrom() + "," + b.getData().getTo() + "," + b.getData().getAmount() + "," + b.getTimeStemp() + "," + b.getHash() + "," + b.getPrev_hash() + ",";
+        }
+        //send the Blocks.
+        String arr[] = theHostAndPort.split(",");
+        MessageTransmetter transmetter = new MessageTransmetter(blockChain, arr[1], Integer.parseInt(arr[2]), 2);
+        transmetter.start();
+
+    }
+
+    @Override
+    public void responseBlockChain(String theResponse) {
+        String arr[] = BlockchainSeparator(theResponse);//responseSeparator(theResponse, "$");
+
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println("block...(" + arr[i] + ")...");
+        }
+
+        if (arr.length > 6) {
+            chain.getMy_Chain().clear();
+            
+            availTrans.setText("");
+            BlocksTextArea.setText("");
+            for (int i = 6; i < arr.length; i += 6) {
+                Block b = new Block(arr[i + 3], new Transactions(arr[i], arr[i + 1], Integer.parseInt(arr[i + 2])), arr[i + 5]);
+                b.setHash(arr[i + 4]);
+                chain.getMy_Chain().add(b);
+                if (i >= 6) {
+                    BlocksTextArea.append("{from:" + b.getData().getFrom() + " ,to:" + b.getData().getTo()
+                            + " ,amount:" + b.getData().getAmount() + " , timestamp:" + b.getTimeStemp() + System.lineSeparator()
+                            + " ,hash:" + b.getHash()
+                            + " ,ph:" + b.getPrev_hash() + "}" + System.lineSeparator());
+                    availTrans.append(chain.getMy_Chain().size()+",");
+                }
+            }
+        }
+    }
+
+    public boolean canMin(int indexMinBlock) //to check if we can min this block or it has been mined allready.
+    {
+        String string = availTrans.getText();
+        int doneMining = -1;
+        if (!string.isEmpty()) {
+            String UnavalableT[] = string.split(",");
+            for (int i = 0; i < UnavalableT.length; i++) {
+                doneMining = Integer.parseInt(UnavalableT[i]);
+                //System.out.println("-" + i + "(" + doneMining + ")"+" "+"(" + indexMinBlock + ")");
+                if (indexMinBlock == (doneMining - 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void addNewToTheFile() {
+        try {
+            String host = mHost.getText();
+            int port = Integer.parseInt(mPort.getText());
+            File theIPs_and_Ports = new File("theIPs_and_Ports.txt");
+            if (!theIPs_and_Ports.exists()) {
+
+                theIPs_and_Ports.createNewFile();
+            }
+
+            BufferedReader br = new BufferedReader(new FileReader(theIPs_and_Ports));
+            String st;
+
+            while ((st = br.readLine()) != null) { // 
+                System.out.println(st);
+                String arr[] = st.split(",");
+                for (int i = 0; i < arr.length; i += 2) {
+                    if (arr[i].equals(host) && port == Integer.parseInt(arr[i + 1])) {
+                        return;
+                    }
+
+                }
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(theIPs_and_Ports, true));
+            writer.append(host + "," + port + ",");
+
+            writer.close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(BlockChain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public static String[] TransactionSeparator(String s, String limit) {
+        String[] records = s.split(limit);//# , $
+        String[] r1 = {};
+        if (records.length > 0) {
+            r1 = records[0].split(",");
+            for (int i = 1; i < records.length; i++) {
+                String[] r2 = records[i].split(",");
+                if (r2.length >= r1.length) {
+                    r1 = r2;
+                }
+            }
+            return r1;
+        }
+        return r1;
+    }
+
+    public static String[] BlockchainSeparator(String s) {
+        String[] records = s.split("$");
+        String[] r1 = records[0].split(",");
+        for (int i = 1; i < records.length; i++) {
+            String[] r2 = records[i].split(",");
+            if (r2.length > r1.length) {
+                r1 = r2;
+            }
+        }
+        return r1;
+    }
 }
