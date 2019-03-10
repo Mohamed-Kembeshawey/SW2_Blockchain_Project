@@ -12,7 +12,7 @@ package block.network;
 public interface writableGUI {
     void write(String s);
     void writeToBlockChain(String s);
-    
+
     void updateTheData(String s);
     void data(String line);
     
