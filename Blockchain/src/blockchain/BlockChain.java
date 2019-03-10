@@ -6,6 +6,9 @@
 package blockchain;
 
 import block.gui.MainScreen;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,8 +22,9 @@ public class BlockChain {
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("Hi ..");
+        
         MainScreen screen = new MainScreen();
         screen.show();
     }
-    
+
 }

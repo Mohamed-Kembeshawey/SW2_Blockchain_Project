@@ -57,15 +57,22 @@ public class MessageListner extends Thread {
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line = br.readLine();
                 if (line != null) {
-                    if (line.charAt(0) == '*') {
+                    if (line.charAt(0) == '*') { //to add transaction.
                        gui.write(line); 
-                    }else if(line.charAt(0)=='!'){
+                    }else if(line.charAt(0)=='!')//update the transactions.
+                    {
                         gui.updateTheData(line);
-                    }else if(line.charAt(0)=='#')
+                    }else if(line.charAt(0)=='#')//the respose of the request of update transactions.
                     {
                         gui.data(line);
+                    }else if(line.charAt(0)=='@') //to update the blockchain.
+                    {
+                        gui.UpdateTheBlockChain(line);
+                    }else if(line.charAt(0)=='$')//the respose of the request of update blockchain.
+                    {
+                        gui.responseBlockChain(line);
                     }
-                    else {
+                    else { //to add block to the chain.
                         gui.writeToBlockChain(line);
                     }
                 }
